@@ -35,11 +35,12 @@ class Search extends React.Component {
 
 	render() {
 		return (
-				<div>
+				<div className='content'>
 					<form onSubmit={this.onFormSubmit.bind(this)}>
-						<label>Github users search: </label>
-						<input placeholder="User name..." value={this.state.text} onChange={this.onFieldChange.bind(this)} />
-						<button type='submit'>Search</button>
+						<div>
+							<label>Search by user name</label>
+							<input placeholder="User name..." value={this.state.text} onChange={this.onFieldChange.bind(this)} />
+						</div>
 					</form>
 					<UsersList users={this.state.usersList} />
 				</div>
@@ -55,7 +56,7 @@ class UsersList extends React.Component {
 
 	render() {
 		return (
-			<div>
+			<div className="list">
 				{this.users}
 			</div>
 		)
@@ -65,8 +66,8 @@ class UsersList extends React.Component {
 
 const User = (props) => {
 		return (
-			<div>
-				<img src={props.user.avatar_url} stype={{maxWidth: '100px'}} />
+			<div className='user'>
+				<img src={props.user.avatar_url} style={{maxWidth: '100px'}} />
 				<a href={props.user.html_url} target="_blank">{props.user.login}</a>
 			</div>
 		)
