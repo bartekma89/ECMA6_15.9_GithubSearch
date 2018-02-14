@@ -41,21 +41,36 @@ class Search extends React.Component {
 						<input placeholder="User name..." value={this.state.text} onChange={this.onFieldChange.bind(this)} />
 						<button type='submit'>Search</button>
 					</form>
-					<ul>
-						{this.state.usersList.map( user => {
-							return (
-									<div key={user.id}>
-										<li>
-											<img src={user.avatar_url} />
-											<a href={user.html_url} target="_blank">{user.login}</a>
-										</li>
-									</div>
-								)
-						})}
-					</ul>
+					<UsersList users={this.state.usersList} />
 				</div>
 			)
 	}
 }
+
+class UsersList extends React.Component {
+
+	get users() {
+		return this.props.users.map( user => <User key={user.id} user={user} />)
+	}
+
+	render() {
+		return (
+			<div>
+				{this.users}
+			</div>
+		)
+	}
+
+}
+
+const User = (props) => {
+		return (
+			<div>
+				<img src={props.user.avatar_url} stype={{maxWidth: '100px'}} />
+				<a href={props.user.html_url} target="_blank">{props.user.login}</a>
+			</div>
+		)
+}
+
 
 ReactDOM.render(<Search />, document.getElementById('root'));

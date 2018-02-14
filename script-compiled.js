@@ -32,14 +32,25 @@ var Search = function (_React$Component) {
 			});
 		}
 	}, {
-		key: 'onSubmit',
-		value: function onSubmit(event) {
+		key: 'onFormSubmit',
+		value: function onFormSubmit(event) {
+			var _this2 = this;
+
 			event.preventDefault();
-			var url = 'https://api.github.com/search/users?q=' + this.state.text;
+			var text = this.state.text;
+
+			var url = 'https://api.github.com/search/users?q=' + text;
 			fetch(url).then(function (response) {
-				return response.json();
+				if (response.ok) {
+					return response.json();
+				} else {
+					throw new Error('Wystapil blad: ', err);
+				}
 			}).then(function (responseJson) {
-				return console.log(responseJson);
+				_this2.setState({ usersList: responseJson.items });
+				console.log(_this2.state.usersList);
+			}).catch(function (error) {
+				return console.dir(error);
 			});
 		}
 	}, {
@@ -50,24 +61,68 @@ var Search = function (_React$Component) {
 				null,
 				React.createElement(
 					'form',
-					null,
+					{ onSubmit: this.onFormSubmit.bind(this) },
 					React.createElement(
 						'label',
 						null,
-						'Github user serach'
+						'Github users search: '
 					),
-					React.createElement('input', { type: 'text', value: this.state.text, onChange: this.onFieldChange.bind(this) }),
+					React.createElement('input', { placeholder: 'User name...', value: this.state.text, onChange: this.onFieldChange.bind(this) }),
 					React.createElement(
 						'button',
-						{ type: 'submit', onSubmit: this.onSubmit.bind(this) },
+						{ type: 'submit' },
 						'Search'
 					)
-				)
+				),
+				React.createElement(UsersList, { users: this.state.usersList })
 			);
 		}
 	}]);
 
 	return Search;
 }(React.Component);
+
+var UsersList = function (_React$Component2) {
+	_inherits(UsersList, _React$Component2);
+
+	function UsersList() {
+		_classCallCheck(this, UsersList);
+
+		return _possibleConstructorReturn(this, (UsersList.__proto__ || Object.getPrototypeOf(UsersList)).apply(this, arguments));
+	}
+
+	_createClass(UsersList, [{
+		key: 'render',
+		value: function render() {
+			return React.createElement(
+				'div',
+				null,
+				this.users
+			);
+		}
+	}, {
+		key: 'users',
+		get: function get() {
+			return this.props.users.map(function (user) {
+				return React.createElement(User, { key: user.id, user: user });
+			});
+		}
+	}]);
+
+	return UsersList;
+}(React.Component);
+
+var User = function User(props) {
+	return React.createElement(
+		'div',
+		null,
+		React.createElement('img', { src: props.user.avatar_url }),
+		React.createElement(
+			'a',
+			{ href: props.user.html_url, target: '_blank' },
+			props.user.login
+		)
+	);
+};
 
 ReactDOM.render(React.createElement(Search, null), document.getElementById('root'));
